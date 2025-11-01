@@ -15,11 +15,11 @@ st.sidebar.title("🛠️ Options de Détourage")
 model_name = st.sidebar.selectbox(
     "Choisissez le modèle d'IA :",
     [
-        "u2net",                # Rapide, qualité moyenne (le défaut d'origine)
-        "isnet-general-use",    # Très haute qualité, plus lent
-        "u2net_human_seg",    # Spécialisé pour les humains (cheveux)
-        "silueta",              # Un autre modèle généraliste
-        "isnet-anime",          # Spécialisé pour les dessins/animes
+        "u2net",               # Rapide, qualité moyenne
+        "isnet-general-use",   # Très haute qualité, plus lent
+        "u2net_human_seg",   # Spécialisé pour les humains (cheveux)
+        "silueta",             # Un autre modèle généraliste
+        "isnet-anime",         # Spécialisé pour les dessins/animes
     ],
     index=1  # Sélectionne "isnet-general-use" par défaut
 )
@@ -31,13 +31,20 @@ st.sidebar.info(
 
 # --- Fonction pour charger le modèle (mise en cache) ---
 # st.cache_resource garantit que nous ne chargeons le modèle qu'une seule fois
+#
+# --- CORRECTION IMPORTANTE CI-DESSOUS ---
+# max_entries=1 empêche le crash sur Streamlit Cloud en ne gardant
+# qu'un seul modèle en mémoire à la fois.
 @st.cache_resource(max_entries=1)
-def load_model_session(model)
+def load_model_session(model):
     """Charge et met en cache la session du modèle rembg."""
-    st.info(f"Chargement du modèle '{model}'... Veuillez patienter.")
+    # Note : st.info() ici peut s'afficher à des moments inattendus
+    # à cause du cache. Il est souvent préférable de le mettre à l'extérieur.
     return new_session(model_name=model)
 
 # Charge la session sélectionnée
+# On affiche le message de chargement ici, avant l'appel
+st.info(f"Chargement/Vérification du modèle '{model_name}'... Veuillez patienter si c'est le premier chargement.")
 session = load_model_session(model_name)
 
 
