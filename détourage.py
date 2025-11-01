@@ -31,8 +31,8 @@ st.sidebar.info(
 
 # --- Fonction pour charger le modèle (mise en cache) ---
 # st.cache_resource garantit que nous ne chargeons le modèle qu'une seule fois
-@st.cache_resource
-def load_model_session(model):
+@st.cache_resource(max_entries=1)
+def load_model_session(model)
     """Charge et met en cache la session du modèle rembg."""
     st.info(f"Chargement du modèle '{model}'... Veuillez patienter.")
     return new_session(model_name=model)
